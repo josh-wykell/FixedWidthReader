@@ -6,16 +6,28 @@ import org.yaml.snakeyaml.Yaml
 
 @CompileStatic
 class Reader {
-    File fwFile
-    File fwConfigFile
+    File          fwFile
+    File          fwConfigFile
+    LinkedHashMap fwConfigMap
 
     Reader(File fwFile, File fwConfig) {
-        this.fwFile = fwFile
+        def yamlConfig = new Yaml()
+
+        this.fwFile       = fwFile
         this.fwConfigFile = fwConfig
+        this.fwConfigMap  = yamlConfig.load(fwConfigFile.text)
     }
 
-    List<List> collectRows(List<Integer> ranges) {
-        List<List> rows = []
+    List<String> getHeaders() {
+        List<String> headers = fwConfigMap.keySet() as List<String>
+      //  return headers
+    }
+
+
+
+    List<List> collectRows() {
+        List<List> rows       = []
+        List<Integer> ranges  = fwConfigMap.values() as List<Integer>
         BufferedReader reader = new BufferedReader(new java.io.FileReader(fwFile, StandardCharsets.UTF_8))
 
         try {
@@ -23,7 +35,7 @@ class Reader {
 
             while (line = reader.readLine()) {
                 Integer startIndex = 0
-                List<String> row = []
+                List<String> row   = []
 
                 ranges.collect {range ->
                     String field = line.substring(startIndex, Math.min(startIndex + range, line.length()))?.trim()
@@ -41,16 +53,5 @@ class Reader {
         }
 
         return rows
-    }
-
-    void read() {
-        def yamlConfig = new Yaml()
-        LinkedHashMap<String, Object> fwConfigMap = yamlConfig.load(fwConfigFile.text)
-        List<String> headers = fwConfigMap.keySet() as List<String>
-        List<Integer> ranges = fwConfigMap.values() as List<Integer>
-        List<List> rows = collectRows(ranges)
-
-        println headers
-        println rows
     }
 }
