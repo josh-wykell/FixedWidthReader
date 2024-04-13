@@ -20,7 +20,7 @@ class Reader {
 
     List<String> getHeaders() {
         List<String> headers = fwConfigMap.keySet() as List<String>
-      //  return headers
+        return headers
     }
 
 

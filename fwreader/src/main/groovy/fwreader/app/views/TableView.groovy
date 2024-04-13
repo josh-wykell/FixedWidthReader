@@ -1,20 +1,20 @@
-package fwreader.app
+package fwreader.app.views
 
 import javax.swing.*
 import javax.swing.table.DefaultTableModel
 
-class FileView {
+class TableView {
     List<String>       headers
     List<List<String>> rows
 
-    FileView(List headers, List rows) {
+    TableView(List headers, List rows) {
         this.headers = headers
         this.rows    = rows
     }
 
-    void createView() {
+    void createView(String viewName) {
         SwingUtilities.invokeLater {
-            def frame = new JFrame("Table Display Example")
+            def frame = new JFrame("${viewName}")
 
             frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
             frame.setSize(400, 300)
