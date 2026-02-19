@@ -1,12 +1,12 @@
 package fwreader.app
 
-import fwreader.app.views.*
+import fwreader.app.gui.*
 
 static void main(String[] args) {
     InputView input = new InputView()
     def files = input.selectFiles()
-    File fwFile   = files["fwFile"]//new File(args[0])
-    File fwConfig = files["configFile"]//new File(args[1])
+    File fwFile   = files["fwFile"]
+    File fwConfig = files["configFile"]
 
     Reader fwReader = new Reader(fwFile, fwConfig)
     def headers = fwReader.getHeaders()

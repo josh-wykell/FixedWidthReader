@@ -1,5 +1,10 @@
 plugins {
     id 'groovy'
+    id 'application'
+}
+
+application {
+    mainClass = 'fwreader.app.Main'
 }
 
 group = 'org.example'

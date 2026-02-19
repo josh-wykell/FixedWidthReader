@@ -1,4 +1,4 @@
-package fwreader.app.views
+package fwreader.app.gui
 
 import javax.swing.*
 import javax.swing.table.DefaultTableModel
