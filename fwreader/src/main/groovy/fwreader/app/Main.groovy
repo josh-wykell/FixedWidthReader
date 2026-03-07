@@ -15,25 +15,13 @@ static void main(String[] args) {
             File fwFile   = files["fwFile"]
             File fwConfig = files["configFile"]
 
-            println "[DEBUG] fwFile:   ${fwFile}"
-            println "[DEBUG] fwConfig: ${fwConfig}"
-
             Reader fwReader = new Reader(fwFile, fwConfig)
-            println "[DEBUG] Reader created"
-
             def headers = fwReader.getHeaders()
-            println "[DEBUG] Headers: ${headers}"
-
-            def rows = fwReader.collectRows()
-            println "[DEBUG] Rows collected: ${rows.size()}"
-
-            def widths = fwReader.getColumnWidths()
-            println "[DEBUG] Widths: ${widths}"
+            def rows    = fwReader.collectRows()
+            def widths  = fwReader.getColumnWidths()
 
             TableView tableViewer = new TableView(headers, rows, widths)
-            println "[DEBUG] TableView created, calling createView..."
             tableViewer.createView(fwFile.name)
-            println "[DEBUG] createView called (runs async on Swing thread)"
             break // Success - exit loop
         } catch (Exception e) {
             def retry = JOptionPane.showConfirmDialog(null,

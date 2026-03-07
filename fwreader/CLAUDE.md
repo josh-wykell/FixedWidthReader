@@ -78,4 +78,3 @@ A Gradle wrapper is present — use `./gradlew`:
 - `settings.gradle` has `rootProject.name = 'untitled'` — likely should be renamed
 - No tests exist yet
 - `src/main/resources/data/fwFileManifest.ser` is a leftover artifact — no longer used, can be deleted
-- Debug `println` statements remain in `Main.groovy` — safe to remove
