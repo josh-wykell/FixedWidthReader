@@ -1,6 +1,7 @@
 plugins {
     id 'groovy'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 application {
@@ -23,4 +24,35 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+shadowJar {
+    archiveBaseName = 'FixedWidthReader'
+    archiveClassifier = ''
+    archiveVersion = ''
+    manifest {
+        attributes 'Main-Class': 'fwreader.app.Main'
+    }
+}
+
+tasks.register('jpackageApp', Exec) {
+    dependsOn shadowJar
+    def javaHome = System.getProperty('java.home')
+    def jpackageBin = "${javaHome}/bin/jpackage"
+    def jarPath = shadowJar.archiveFile.get().asFile.absolutePath
+    def outputDir = layout.buildDirectory.dir('jpackage').get().asFile.absolutePath
+
+    doFirst {
+        file(outputDir).deleteDir()
+    }
+
+    commandLine jpackageBin,
+        '--type',         'pkg',
+        '--name',         'FixedWidthReader',
+        '--input',        file(jarPath).parent,
+        '--main-jar',     file(jarPath).name,
+        '--main-class',   'fwreader.app.Main',
+        '--dest',         outputDir,
+        '--app-version',  '1.0',
+        '--mac-package-name', 'FixedWidthReader'
 }

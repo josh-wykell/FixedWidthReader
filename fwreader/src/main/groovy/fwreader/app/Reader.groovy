@@ -23,6 +23,10 @@ class Reader {
         return headers
     }
 
+    List<Integer> getColumnWidths() {
+        return fwConfigMap.values() as List<Integer>
+    }
+
 
 
     List<List> collectRows() {

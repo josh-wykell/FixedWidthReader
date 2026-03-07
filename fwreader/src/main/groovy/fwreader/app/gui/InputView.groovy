@@ -10,6 +10,20 @@ import org.yaml.snakeyaml.Yaml
 class InputView {
     final File manifestFile = new File(System.getProperty("user.home"), ".fwreader/fwFileManifest.ser")
     final File configsDir   = new File(System.getProperty("user.home"), ".fwreader/configs")
+    final File lastDirFile  = new File(System.getProperty("user.home"), ".fwreader/lastDir.txt")
+
+    private File loadLastDir() {
+        if (lastDirFile.exists()) {
+            def dir = new File(lastDirFile.text.trim())
+            if (dir.isDirectory()) return dir
+        }
+        return null
+    }
+
+    private void saveLastDir(File dir) {
+        lastDirFile.parentFile.mkdirs()
+        lastDirFile.text = dir.absolutePath
+    }
 
     Map<String, File> loadFileManifest() {
         if (!manifestFile.exists()) return [:]
@@ -53,7 +67,6 @@ class InputView {
     private void showFWFileChooser(Map selectedFiles, CountDownLatch latch) {
         def frame = new JFrame("Select Fixed Width File")
         frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
-        frame.setSize(600, 150)
         frame.layout = new BorderLayout(10, 10)
         ((JPanel) frame.contentPane).border = new EmptyBorder(10, 10, 10, 10)
 
@@ -68,10 +81,11 @@ class InputView {
         }
 
         chooseButton.addActionListener { event ->
-            def fileChooser = new JFileChooser()
+            def fileChooser = new JFileChooser(loadLastDir() ?: new File(System.getProperty("user.home")))
             if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
                 fwFileTextField.text    = fileChooser.selectedFile.absolutePath
                 selectedFiles["fwFile"] = fileChooser.selectedFile
+                saveLastDir(fileChooser.selectedFile.parentFile)
             }
         }
 
@@ -102,6 +116,8 @@ class InputView {
         frame.add(topPanel, BorderLayout.NORTH)
         frame.add(centerPanel, BorderLayout.CENTER)
         frame.add(bottomPanel, BorderLayout.SOUTH)
+        frame.pack()
+        frame.setLocationRelativeTo(null)
         frame.setVisible(true)
     }
 
@@ -189,7 +205,6 @@ class InputView {
     private void showConfigChooser(Map<String, File> configManifest, Map selectedFiles, CountDownLatch latch) {
         def frame = new JFrame("Add Config")
         frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
-        frame.setSize(600, 180)
         frame.layout = new BorderLayout(10, 10)
         ((JPanel) frame.contentPane).border = new EmptyBorder(10, 10, 10, 10)
 
@@ -202,10 +217,11 @@ class InputView {
         def backButton          = new JButton("Back")
 
         chooseButton.addActionListener { event ->
-            def fileChooser = new JFileChooser()
+            def fileChooser = new JFileChooser(loadLastDir() ?: new File(System.getProperty("user.home")))
             if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
                 configFileTextField.text    = fileChooser.selectedFile.absolutePath
                 selectedFiles["configFile"] = fileChooser.selectedFile
+                saveLastDir(fileChooser.selectedFile.parentFile)
             }
         }
 
@@ -313,6 +329,8 @@ class InputView {
         frame.add(topPanel, BorderLayout.NORTH)
         frame.add(centerPanel, BorderLayout.CENTER)
         frame.add(bottomPanel, BorderLayout.SOUTH)
+        frame.pack()
+        frame.setLocationRelativeTo(null)
         frame.setVisible(true)
     }
 
