@@ -1,0 +1,17 @@
+# Gradle
+.gradle/
+build/
+fwreader/.gradle/
+fwreader/build/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# macOS
+.DS_Store
+
+# Serialized manifests and user data (stored in ~/.fwreader/ at runtime)
+*.ser
+lastDir.txt
