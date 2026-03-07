@@ -1,0 +1,45 @@
+name: Build Installers
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build macOS installer
+        working-directory: fwreader
+        run: ./gradlew jpackageApp
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FixedWidthReader-macOS
+          path: fwreader/build/jpackage/*.pkg
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build Windows installer
+        working-directory: fwreader
+        run: ./gradlew jpackageApp
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FixedWidthReader-Windows
+          path: fwreader/build/jpackage/*.exe

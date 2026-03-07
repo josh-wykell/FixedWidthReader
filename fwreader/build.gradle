@@ -38,7 +38,8 @@ shadowJar {
 tasks.register('jpackageApp', Exec) {
     dependsOn shadowJar
     def javaHome = System.getProperty('java.home')
-    def jpackageBin = "${javaHome}/bin/jpackage"
+    def isWindows = System.getProperty('os.name').toLowerCase().contains('windows')
+    def jpackageBin = isWindows ? "${javaHome}/bin/jpackage.exe" : "${javaHome}/bin/jpackage"
     def jarPath = shadowJar.archiveFile.get().asFile.absolutePath
     def outputDir = layout.buildDirectory.dir('jpackage').get().asFile.absolutePath
 
@@ -46,13 +47,18 @@ tasks.register('jpackageApp', Exec) {
         file(outputDir).deleteDir()
     }
 
-    commandLine jpackageBin,
-        '--type',         'pkg',
-        '--name',         'FixedWidthReader',
-        '--input',        file(jarPath).parent,
-        '--main-jar',     file(jarPath).name,
-        '--main-class',   'fwreader.app.Main',
-        '--dest',         outputDir,
-        '--app-version',  '1.0',
-        '--mac-package-name', 'FixedWidthReader'
+    def args = [
+        jpackageBin,
+        '--type',        isWindows ? 'exe' : 'pkg',
+        '--name',        'FixedWidthReader',
+        '--input',       file(jarPath).parent,
+        '--main-jar',    file(jarPath).name,
+        '--main-class',  'fwreader.app.Main',
+        '--dest',        outputDir,
+        '--app-version', '1.0',
+    ]
+    if (!isWindows) {
+        args += ['--mac-package-name', 'FixedWidthReader']
+    }
+    commandLine args
 }
